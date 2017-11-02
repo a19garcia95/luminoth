@@ -252,7 +252,7 @@ class Retina(snt.AbstractModule):
                 name='fpn_new_level_second'
             )
             new_level_first = self._conv_new_level_first(
-                fpn_levels[0]
+                self.fpn.end_points[0]
             )
             new_level_second = self._conv_new_level_second(
                 tf.nn.relu(new_level_first)

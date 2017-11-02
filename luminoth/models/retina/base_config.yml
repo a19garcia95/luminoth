@@ -25,7 +25,7 @@ model:
       - 'block2/unit_4/bottleneck_v2/conv1'
 
   loss:
-    gamma: 2.0
+    gamma: 2.5
 
   # Config for BBox delta prediction subnets.
   box_subnet:
@@ -58,7 +58,7 @@ model:
     final:
       # Pi as described in the paper. Used to initialize the bias of the
       # final layer.
-      pi: 0.1  # In the paper, they use 0.01
+      pi: 0.01  # In the paper, they use 0.01
       kernel_shape: [3, 3]
       activation: sigmoid
 
@@ -154,8 +154,11 @@ train:
     _replace: True
     # Learning rate decay method ((empty), "none", piecewise_constant, exponential_decay, polynomial_decay)
     # You can define different decay methods using `decay_method` and defining all the necessary arguments.
-    decay_method:
-    learning_rate: 0.001
+    decay_method: piecewise_constant
+    values: [0.001, 0.0001, 0.00001]
+    boundaries:
+      - 40000
+      - 60000
 
   # Optimizer config
   optimizer:

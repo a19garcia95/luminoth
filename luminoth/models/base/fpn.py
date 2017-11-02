@@ -27,22 +27,24 @@ class FPN(BaseNetwork):
         )
         end_points_unordered = self._get_endpoint_list(base_pred)
         # TODO: sort end_points.
-        end_points = end_points_unordered
+        # We make them public because we may need them for the layers that use
+        # FPN (e.g. Retina)
+        self.end_points = end_points_unordered
 
         # Create one 1x1 Conv layer for each pyramid level.
         conversors = []
-        for i in range(len(end_points)):
+        for i in range(len(self.end_points)):
             conversors.append(snt.Conv2D(
                 output_channels=self._num_channels,
                 kernel_shape=[1, 1], name='fpn_level_{}'.format(i)
             ))
 
         try:
-            fpn_levels = [conversors[0](end_points[0])]
+            fpn_levels = [conversors[0](self.end_points[0])]
         except IndexError:
             raise ValueError('No valid endpoints to build FPN.')
 
-        for i, end_point in enumerate(end_points):
+        for i, end_point in enumerate(self.end_points):
             if i == 0:
                 continue
             previous_level = fpn_levels[i - 1]

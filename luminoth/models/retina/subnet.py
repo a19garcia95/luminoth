@@ -30,6 +30,11 @@ class Subnet(snt.AbstractModule):
             new_layer = snt.Conv2D(
                 output_channels=self._config.hidden.channels,
                 kernel_shape=self._config.hidden.kernel_shape,
+                initializers={
+                    'w': tf.random_normal_initializer(
+                        mean=0.0, stddev=0.01
+                    ),
+                },
                 name='{}_hidden_{}'.format(self._prefix, i)
             )
             layers.append(new_layer)
