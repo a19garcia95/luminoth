@@ -42,7 +42,7 @@ class BaseNetworkTest(tf.test.TestCase):
         m = FullyConvolutionalNetwork(self.config)
         inputs = tf.placeholder(tf.float32, [1, None, None, 3])
         # Should not fail.
-        m(inputs)
+        print(m(inputs))
         # Free up memory for Travis
         tf.reset_default_graph()
         gc.collect(generation=2)
