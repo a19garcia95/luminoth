@@ -56,13 +56,14 @@ class Retina(snt.AbstractModule):
         # Add new FPN levels (AMIP)
         fpn_levels = self._add_fpn_levels(fpn_levels)
 
-        box_subnet = BoxSubnet(
-            self._config.model.box_subnet, num_anchors=self._num_anchors
-        )
-        class_subnet = ClassSubnet(
-            self._config.model.class_subnet, num_anchors=self._num_anchors,
-            num_classes=self._num_classes
-        )
+        if self._share_weights:
+            box_subnet = BoxSubnet(
+                self._config.model.box_subnet, num_anchors=self._num_anchors
+            )
+            class_subnet = ClassSubnet(
+                self._config.model.class_subnet, num_anchors=self._num_anchors,
+                num_classes=self._num_classes
+            )
         self._proposal = RetinaProposal(
             self._config.model.proposal, num_classes=self._num_classes
         )
@@ -72,6 +73,16 @@ class Retina(snt.AbstractModule):
         class_probs = []
         all_anchors = []
         for level in fpn_levels:
+            if not self._share_weights:
+                box_subnet = BoxSubnet(
+                    self._config.model.box_subnet,
+                    num_anchors=self._num_anchors
+                )
+                class_subnet = ClassSubnet(
+                    self._config.model.class_subnet,
+                    num_anchors=self._num_anchors,
+                    num_classes=self._num_classes
+                )
             level_shape_int = tf.shape(level)[1:3]
             level_shape = tf.to_float(level_shape_int)
             anchors = self._generate_anchors(tf.shape(level))

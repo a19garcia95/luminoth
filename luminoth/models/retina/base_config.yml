@@ -3,6 +3,7 @@
 
 model:
   type: retina
+  share_weights: False
   anchors:
     # Base size to use for anchors (in pyramid-level points)
     base_size: 8
@@ -29,8 +30,6 @@ model:
 
   # Config for BBox delta prediction subnets.
   box_subnet:
-    # TODO: not implemented
-    share_weights: True
     # Config for the hidden layers of the net.
     hidden:
       depth: 4
@@ -44,7 +43,6 @@ model:
 
   # Config for classification subnet(s).
   class_subnet:
-    # TODO: not implemented
     share_weights: True
     # Config for the hidden layers of the net.
     hidden:
