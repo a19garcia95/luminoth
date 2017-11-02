@@ -24,7 +24,7 @@ class Subnet(snt.AbstractModule):
             config.final.activation
         )
 
-    def _build(self, fpn_level, anchors):
+    def _build(self, fpn_level):
         layers = []
         for i in range(self._config.hidden.depth):
             new_layer = snt.Conv2D(

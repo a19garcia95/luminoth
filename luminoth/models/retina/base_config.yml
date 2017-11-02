@@ -3,9 +3,10 @@
 
 model:
   type: retina
-  share_weights: False
+  share_weights: True
   anchors:
-    # Base size to use for anchors (in pyramid-level points)
+    # Base size to use for anchors.
+    # This is the size in level-'pixels'.
     base_size: 8
     # Aspect ratios used for generating anchors (AMIP)
     ratios: [0.5, 1., 2.]
@@ -26,7 +27,13 @@ model:
       - 'block2/unit_4/bottleneck_v2/conv1'
 
   loss:
-    gamma: 2.5
+    gamma: 2.0
+    # Multiplier weight for the class loss.
+    class_weight: 1
+    # The weight of the loss for background will be divided by this number.
+    background_weight_divider: 2
+    # Whether or not to sum all the loss values.
+    reduce_sum: False
 
   # Config for BBox delta prediction subnets.
   box_subnet:
@@ -56,9 +63,11 @@ model:
     final:
       # Pi as described in the paper. Used to initialize the bias of the
       # final layer.
-      pi: 0.01  # In the paper, they use 0.01
+      pi: 0.01  # AMIP
       kernel_shape: [3, 3]
-      activation: sigmoid
+      # They use sigmoid, but they're doing binary classification.
+      # ReLU makes more sense for multi-class classification.
+      activation: relu
 
   target:
     # Threshold with GT to be considered positive
